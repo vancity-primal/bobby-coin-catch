@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bobby Giveaway — Setup</title>
+    <style>
+        @font-face {
+            font-family: 'Dharma Gothic';
+            src: url('fonts/dharma-gothic-m-ex-bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Ropa Sans Pro';
+            src: url('fonts/ropa-sans-pro-regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: rgb(123, 143, 217);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 28px 24px 64px;
+            font-family: 'Ropa Sans Pro', sans-serif;
+            color: white;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-family: 'Dharma Gothic', sans-serif;
+            font-size: 80px;
+            color: white;
+            margin: 0;
+            line-height: 1;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.55);
+            margin: 8px 0 0;
+        }
+
+        .card {
+            background: rgba(20, 35, 100, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 36px 40px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .field-group {
+            margin-bottom: 32px;
+        }
+
+        .field-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label.field-label {
+            display: block;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #f5ac3e;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-family: 'Ropa Sans Pro', sans-serif;
+            font-size: 18px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            opacity: 0.4;
+        }
+
+        input[type="text"]::placeholder,
+        input[type="number"]::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            border-color: #f5ac3e;
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .schedule-grid .sub-label {
+            display: block;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.45);
+            margin-bottom: 7px;
+        }
+
+        .schedule-grid input[type="number"] {
+            font-size: 16px;
+        }
+
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background 0.15s, border-color 0.15s;
+        }
+
+        .radio-option:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .radio-option input[type="radio"] {
+            accent-color: #f5ac3e;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .radio-option.selected {
+            background: rgba(245, 172, 62, 0.1);
+            border-color: rgba(245, 172, 62, 0.4);
+        }
+
+        .radio-label {
+            font-size: 17px;
+            color: white;
+            flex: 1;
+        }
+
+        .radio-desc {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.45);
+            margin-top: 2px;
+        }
+
+        .sub-input-wrapper {
+            margin-top: 10px;
+            display: none;
+        }
+
+        .sub-input-wrapper.visible {
+            display: block;
+        }
+
+        .sub-input-wrapper input[type="text"] {
+            font-size: 16px;
+        }
+
+        .field-tip {
+            margin: 12px 0 0;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.38);
+            line-height: 1.5;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .tip-label {
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            color: rgba(255, 255, 255, 0.45);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 3px;
+            padding: 1px 5px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* Output section */
+        .output-section {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 28px;
+        }
+
+        .btn-start {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            width: 100%;
+            font-size: 22px;
+            padding: 16px;
+            letter-spacing: 1px;
+            pointer-events: none;
+            opacity: 0.35;
+        }
+
+        .btn-start.active {
+            pointer-events: auto;
+            opacity: 1;
+        }
+
+        .obs-hint {
+            margin: 36px 0 0;
+            font-size: 13px;
+            color: rgb(20, 35, 100);
+            text-align: center;
+        }
+
+        .url-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .url-box {
+            flex: 1;
+            background: rgba(20, 35, 100, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-family: monospace;
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #f5ac3e;
+            transition: opacity 0.2s;
+        }
+
+        .url-box.empty {
+            color: rgba(255, 255, 255, 0.25);
+            font-style: italic;
+            font-family: 'Ropa Sans Pro', sans-serif;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 11px 22px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Ropa Sans Pro', sans-serif;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.15s, opacity 0.15s;
+        }
+
+        .btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #f5ac3e;
+            color: #05051a;
+            font-weight: bold;
+        }
+
+        .btn-primary:not(:disabled):hover {
+            background: #f7be5e;
+        }
+
+        .btn-secondary {
+            background: rgba(20, 35, 100, 0.85);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .btn-secondary:not(:disabled):hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .footer-note {
+            margin-top: 20px;
+            font-size: 13px;
+            color: rgb(20, 35, 100);
+            text-align: center;
+        }
+
+        .footer-note code {
+            color: rgb(20, 35, 100);
+            background: rgba(20, 35, 100, 0.15);
+            padding: 1px 5px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>BOBBY GIVEAWAY</h1>
+    </header>
+
+    <div class="card">
+
+        <!-- Channel name -->
+        <div class="field-group">
+            <label class="field-label" for="channelInput">Twitch Channel</label>
+            <input
+                type="text"
+                id="channelInput"
+                placeholder="e.g. xqc"
+                autocomplete="off"
+                spellcheck="false"
+            >
+        </div>
+
+        <!-- Trigger -->
+        <div class="field-group">
+            <label class="field-label">Shot Trigger</label>
+            <div class="radio-group" id="triggerGroup">
+
+                <label class="radio-option selected">
+                    <input type="radio" name="trigger" value="all" checked>
+                    <div>
+                        <div class="radio-label">Every message</div>
+                        <div class="radio-desc">Any chat message throws a coin</div>
+                    </div>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="trigger" value="emote">
+                    <div>
+                        <div class="radio-label">Emotes only</div>
+                        <div class="radio-desc">Only messages that contain a Twitch emote</div>
+                    </div>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="trigger" value="command">
+                    <div>
+                        <div class="radio-label">Custom command</div>
+                        <div class="radio-desc">Only messages starting with a specific command</div>
+                    </div>
+                </label>
+
+            </div>
+            <div class="sub-input-wrapper" id="commandInputWrapper">
+                <input
+                    type="text"
+                    id="commandInput"
+                    placeholder="e.g. !shoot"
+                    autocomplete="off"
+                    spellcheck="false"
+                >
+            </div>
+            <p class="field-tip"><span class="tip-label">TIP</span> Put chat in sub-only mode if you want to limit who can play</p>
+        </div>
+
+        <!-- Scheduled rounds -->
+        <div class="field-group">
+            <label class="field-label">Scheduled Rounds</label>
+            <div class="schedule-grid">
+                <div>
+                    <span class="sub-label">Break duration (minutes)</span>
+                    <input type="number" id="durationInput" placeholder="e.g. 20" min="1" max="180" autocomplete="off">
+                </div>
+                <div>
+                    <span class="sub-label">Number of rounds</span>
+                    <input type="number" id="roundsInput" placeholder="e.g. 4" min="1" max="20" autocomplete="off">
+                </div>
+            </div>
+            <p class="field-tip"><span class="tip-label">TIP</span> Leave empty to run rounds manually — rounds end when you click "End Round"</p>
+        </div>
+
+    </div>
+
+    <!-- URL output -->
+    <div class="output-section">
+        <a class="btn btn-secondary btn-start" id="startBtn" href="#" target="_blank">Start Game</a>
+        <p class="obs-hint">Or add as an OBS browser source to use as a stream overlay</p>
+        <div class="url-row">
+            <div class="url-box empty" id="urlDisplay">Enter a channel name to generate your URL</div>
+            <button class="btn btn-secondary" id="copyBtn" disabled>Copy Link</button>
+        </div>
+        <p class="footer-note">
+            Set OBS browser source to <code>1920&times;1080</code>
+        </p>
+    </div>
+
+    <script>
+        const channelInput   = document.getElementById('channelInput');
+        const commandInput   = document.getElementById('commandInput');
+        const commandWrapper = document.getElementById('commandInputWrapper');
+        const durationInput  = document.getElementById('durationInput');
+        const roundsInput    = document.getElementById('roundsInput');
+        const urlDisplay     = document.getElementById('urlDisplay');
+        const copyBtn        = document.getElementById('copyBtn');
+        const startBtn       = document.getElementById('startBtn');
+
+        // Sync radio highlight class
+        function syncRadioHighlight(groupId) {
+            const group = document.getElementById(groupId);
+            group.querySelectorAll('.radio-option').forEach(opt => {
+                const radio = opt.querySelector('input[type="radio"]');
+                opt.classList.toggle('selected', radio.checked);
+            });
+        }
+
+        // Show/hide command sub-input
+        function updateSubInputs() {
+            const trigger = document.querySelector('input[name="trigger"]:checked').value;
+            commandWrapper.classList.toggle('visible', trigger === 'command');
+        }
+
+        // Generate the game URL
+        function buildURL() {
+            const channel = channelInput.value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+            if (!channel) return null;
+
+            const trigger = document.querySelector('input[name="trigger"]:checked').value;
+
+            const params = new URLSearchParams();
+            params.set('channel', channel);
+
+            if (trigger === 'emote') {
+                params.set('trigger', 'emote');
+            } else if (trigger === 'command') {
+                const cmd = commandInput.value.trim() || '!shoot';
+                params.set('trigger', cmd);
+            }
+
+            const duration = parseFloat(durationInput.value);
+            const rounds   = parseInt(roundsInput.value);
+            if (duration > 0 && rounds > 0) {
+                params.set('duration', duration);
+                params.set('rounds',   rounds);
+            }
+
+            const base = window.location.origin + window.location.pathname.replace('index.html', '');
+            return `${base}game.html?${params.toString()}`;
+        }
+
+
+        function updateOutput() {
+            const url = buildURL();
+            if (url) {
+                urlDisplay.textContent = url;
+                urlDisplay.classList.remove('empty');
+                copyBtn.disabled = false;
+                startBtn.href = url;
+                startBtn.classList.add('active');
+            } else {
+                urlDisplay.textContent = 'Enter a channel name to generate your URL';
+                urlDisplay.classList.add('empty');
+                copyBtn.disabled = true;
+                startBtn.href = '#';
+                startBtn.classList.remove('active');
+            }
+        }
+
+        // Event listeners
+        channelInput.addEventListener('input', () => {
+            const cleaned = channelInput.value.toLowerCase().replace(/[^a-z0-9_]/g, '');
+            if (channelInput.value !== cleaned) channelInput.value = cleaned;
+            updateOutput();
+        });
+
+        commandInput.addEventListener('input', updateOutput);
+
+        durationInput.addEventListener('input', updateOutput);
+        roundsInput.addEventListener('input',   updateOutput);
+
+        document.querySelectorAll('input[name="trigger"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                syncRadioHighlight('triggerGroup');
+                updateSubInputs();
+                updateOutput();
+            });
+        });
+
+        // Copy button
+        copyBtn.addEventListener('click', () => {
+            const url = buildURL();
+            if (!url) return;
+            navigator.clipboard.writeText(url).then(() => {
+                copyBtn.textContent = 'Copied!';
+                setTimeout(() => { copyBtn.textContent = 'Copy Link'; }, 2000);
+            }).catch(() => {
+                const range = document.createRange();
+                range.selectNode(urlDisplay);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+            });
+        });
+
+        // Init
+        updateSubInputs();
+        updateOutput();
+    </script>
+</body>
+</html>
