@@ -41,16 +41,33 @@
             z-index: 5;
         }
 
-        #bobbyBg {
+        #bobbyBgWrapper {
             position: absolute;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
             width: 80vw;
             min-width: 30rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #bobbyBg {
+            width: 100%;
             height: auto;
             pointer-events: none;
             opacity: 0.25;
+        }
+
+        #chatPlayText {
+            color: white;
+            font-family: 'Dharma Gothic', sans-serif;
+            font-size: 5rem;
+            text-align: center;
+            opacity: 0.4;
+            margin-top: 3.5rem;
+            letter-spacing: 0.05em;
         }
 
         #background {
@@ -445,9 +462,18 @@
             color: #ff6b6b;
         }
 
+        /* Round stats shown on podium overlay */
+        #roundStatsLine {
+            margin-top: 20px;
+            font-family: 'Ropa Sans Pro', sans-serif;
+            font-size: 22px;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 0.5px;
+        }
+
         /* Auto-advance countdown shown on podium overlay */
         #nextRoundInfo {
-            margin-top: 24px;
+            margin-top: 12px;
             font-family: 'Ropa Sans Pro', sans-serif;
             font-size: 22px;
             color: rgba(255, 255, 255, 0.6);
@@ -485,7 +511,10 @@
 <body>
     <div id="resumeOverlay"><span>Click to start</span></div>
     <div id="background">
-        <img id="bobbyBg" src="img/bobby-coin-catch-logo.png" alt="">
+        <div id="bobbyBgWrapper">
+            <img id="bobbyBg" src="img/bobby-coin-catch-logo.png" alt="">
+            <div id="chatPlayText">Type in the chat to play!</div>
+        </div>
     </div>
     <div id="winnersContainer">
         <div class="section-label">Leaderboard</div>
@@ -538,6 +567,7 @@
             </div>
         </div>
         <button id="newRoundBtn">Start New Round</button>
+        <div id="roundStatsLine"></div>
         <div id="nextRoundInfo"></div>
     </div>
 
@@ -628,6 +658,7 @@
 
                 // Leaderboard tracking with timestamps for tie-breaking
                 this.userScores = new Map(); // username -> { score, firstScoreTime, userColor, displayName }
+                this.roundThrowers = new Set(); // unique participants per round
                 this.previousTop3 = []; // Cache previous top 3 to avoid unnecessary re-renders
 
                 // Visual scale for coins (makes them bigger without affecting physics hitbox)
@@ -998,6 +1029,11 @@
             }
 
             showPodium() {
+                // Snapshot per-round stats before any reset
+                const roundShots        = this.attempts;
+                const roundParticipants = this.roundThrowers.size;
+                const roundGoals        = this.score;
+
                 // Clear any balls still in flight
                 this.balls.forEach(b => b.element.remove());
                 this.balls = [];
@@ -1035,6 +1071,9 @@
                 } else {
                     podiumTitle.textContent = 'Round Over';
                 }
+
+                document.getElementById('roundStatsLine').textContent =
+                    `${roundShots} ${roundShots === 1 ? 'shot' : 'shots'}  ·  ${roundParticipants} ${roundParticipants === 1 ? 'player' : 'players'}  ·  ${roundGoals} ${roundGoals === 1 ? 'goal' : 'goals'}`;
 
                 document.getElementById('podiumOverlay').style.display = 'flex';
 
@@ -1083,6 +1122,7 @@
                 this.previousTop3 = [];
                 this.score    = 0;
                 this.attempts = 0;
+                this.roundThrowers.clear();
 
                 // Reset leaderboard display
                 this.leaderboardContainer.innerHTML = '';
@@ -1119,6 +1159,7 @@
 
             throwBall(username, tags = {}) {
                 this.attempts++;
+                this.roundThrowers.add(username);
                 console.log(`${username} threw a ball! Attempt #${this.attempts} (Active balls: ${this.balls.length})`);
 
                 const basketCenterX = this.basket.x + this.basket.width / 2;
